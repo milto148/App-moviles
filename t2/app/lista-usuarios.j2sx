@@ -1,0 +1,180 @@
+import { useState } from 'react';
+import { View, TextInput, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, Card, useTheme } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import usuariosMotos from '../assets/usuarios-motos.json';
+import { useRouter } from 'expo-router';
+
+export default function ListaUsuarios() {
+  const [textoBuscar, setTextoBuscar] = useState('');
+  const router = useRouter();
+  const { colors } = useTheme();
+
+  const filtrados = usuariosMotos.filter(user =>
+    user.nombre.toLowerCase().includes(textoBuscar.toLowerCase())
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Entusiastas</Text>
+        <TouchableOpacity style={styles.headerIcon}>
+          <MaterialCommunityIcons name="dots-horizontal" size={24} color="#ffffff" />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.searchContainer}>
+        <MaterialCommunityIcons name="magnify" size={20} color="#9ca3af" style={styles.searchIcon} />
+        <TextInput
+          style={styles.buscar}
+          placeholder="Buscar entusiasta..."
+          value={textoBuscar}
+          onChangeText={setTextoBuscar}
+          placeholderTextColor="#9ca3af"
+        />
+      </View>
+
+      <FlatList
+        data={filtrados}
+        keyExtractor={(item) => item.id.toString()}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => router.push({ pathname: '/perfil-usuario', params: { id: item.id } })}
+            style={styles.cardTouchable}
+          >
+            <Card style={styles.card}>
+              <Card.Content style={styles.cardContent}>
+                <View style={styles.avatarContainer}>
+                  <Image
+                    source={{ uri: item.avatar }}
+                    style={styles.avatar}
+                  />
+                  <View style={styles.onlineIndicator} />
+                </View>
+                <View style={styles.userInfo}>
+                  <Text style={styles.name}>{item.nombre}</Text>
+                  <Text style={styles.role}>Entusiasta de Motos</Text>
+                </View>
+                <MaterialCommunityIcons 
+                  name="chevron-right" 
+                  size={20} 
+                  color="#9ca3af" 
+                />
+              </Card.Content>
+            </Card>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#8b5cf6', // Purple gradient background
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 20,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  headerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 24,
+    marginBottom: 24,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  searchIcon: {
+    marginRight: 12,
+  },
+  buscar: {
+    flex: 1,
+    height: 50,
+    fontSize: 16,
+    color: '#1f2937',
+  },
+  listContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  cardTouchable: {
+    marginBottom: 16,
+  },
+  card: {
+    borderRadius: 20,
+    backgroundColor: '#ffffff',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 8,
+  },
+  cardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+  },
+  avatarContainer: {
+    position: 'relative',
+    marginRight: 16,
+  },
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 3,
+    borderColor: '#f3f4f6',
+  },
+  onlineIndicator: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#10b981',
+    borderWidth: 3,
+    borderColor: '#ffffff',
+  },
+  userInfo: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1f2937',
+    marginBottom: 4,
+  },
+  role: {
+    fontSize: 14,
+    color: '#6b7280',
+    fontWeight: '400',
+  },
+});
