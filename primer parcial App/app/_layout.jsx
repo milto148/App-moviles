@@ -1,0 +1,12 @@
+// _layout.jsx placeholder
+import React from "react";
+import { Stack } from "expo-router";
+import { Provider as PaperProvider } from "react-native-paper";
+
+export default function Layout() {
+  return (
+    <PaperProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </PaperProvider>
+  );
+}
